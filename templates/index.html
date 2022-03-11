@@ -15,12 +15,14 @@
     <script >
         var user = "{{ user }}";
 
-        var D = false;
+        var D = true;
         D = '{{ dbg }}' ;
+        console.log('debug', D);
         {% if (D != '0') and (D !='') and (D != 'False') %}
-         D = true;
+         D = false;
         {% endif %}
         window.DBG = D;
+        console.log('debug', window.DBG);
     </script>
 </head>
 
