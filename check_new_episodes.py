@@ -1,9 +1,10 @@
+
 from apscheduler.schedulers.blocking import BlockingScheduler
 import manager_podcast
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=4)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=4,timezone='CET')
 def scheduled_job():
     print('Cron checkNewEpisodes')
     manager_podcast.create_database()

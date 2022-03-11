@@ -1,77 +1,103 @@
-<!doctype html>
-<head>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript">
-        window.onload = function () {
-            var form = document.forms.namedItem("form_login");
-            form.addEventListener('submit', function (ev) {
-                oData = new FormData(form);
-                var url_string = window.location.href;
-                var url = new URL(url_string);
-                var redirectUrl = url.searchParams.get("redirectUrl");
-                var headers = new Headers();
-                headers.append('Accept', 'application/json');
-                request = new Request('/connect', {
-                    headers : headers,
-                    method: 'POST',
-                    body: oData
-                });
-                $(".error").hide()
-                fetch(request).then(response => {
-                    if (response.status === 200) {
-                        if (redirectUrl != null) {
-                            response.json().then(function (data) {
-                                var url = new URL(redirectUrl);
-                                url.searchParams.set("token",encodeURI(data["token"]))
-                                window.location.replace(url.toString());
-                            });
-                        }else{
-                            window.location.replace("/");
-                        }
-                    } else {
-                        if (redirectUrl != null) {
-                            response.json().then(function (data) {
-                                console.log(data["error"])
-                                var url = new URL(redirectUrl);
-                                url.searchParams.set("error", encodeURI(data["error"]))
-                                window.location.replace(url.toString());
-                            });
-                        }else{
-                            $(".error").show()
-                        }
-                    }
-                });
-                ev.preventDefault();
-            }, false);
+{% extends 'index.html' %}
+
+{% block title %} - Login{% endblock %}
+{% block code %}
+<script type="text/javascript">
+$(document).ready( () =>  {
+    $(".error").hide();
+});
+
+$('#form_login').submit(async (ev) => {
+    $("#error").hide();
+    ev.preventDefault();
+
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    var redirectUrl = url.searchParams.get("redirectUrl");
+
+    var headers = new Headers();
+    headers.append('Accept', 'application/json');
+    
+    var login = $("#login").val();
+    var oData = new FormData();
+    oData.append('login', login)
+    oData.append('password', $("#password").val())
+    
+    try {
+        var req = new Request('/connect', {
+            headers : headers,
+            method: 'POST',
+            body: oData
+            });
+    
+        var resp= await fetch(req);
+        if (resp.ok) {
+            user = login;
+            if (redirectUrl != null) {
+                var data = await resp.json();
+                url = new URL(redirectUrl);
+                url.searchParams.set("token",encodeURI(data["token"]))
+
+                window.location.replace(url.toString());
+            } else {
+                window.location.replace("/");
+            }
+        } else {
+            user = '';
+            if (redirectUrl != null) {
+                var data = await resp.json()
+                var url = new URL(redirectUrl);
+                url.searchParams.set("error", encodeURI(data))
+                window.location.replace(url.toString());
+            } else {
+                var data = await resp.json();
+                $(".error")
+                    .text(JSON.stringify(data))
+                    .show();
+            }
         }
-    </script>
-    <title>MyPodcasts</title>
-    <link rel="icon" href="/static/favicon.ico"/>
-</head>
-<body>
-    <h1>
-        Login
-    </h1>
-    <p>
-        <label class="error" style="display: none">
-            Error in login or password
-        </label>
-        <form enctype="multipart/form-data" method="post" id="form_login">
-            <div class="login">
-                <label for="login">
-                    <b>Login</b>
-                </label>
-                <input type="text" placeholder="Enter Username" name="login" required>
-            </div>
-            <div class="psw">
-                <label for="psw">
-                    <b>Password</b>
-                </label>
-                <input type="password" placeholder="Enter Password" name="password" required>
-            </div>
-            <div>
-                <button type="submit">Connect</button>
-            </div>
+    }
+    catch (e) {
+        console.error('Error in login ', e);
+        $(".error").show();
+    } finally {
+        ev.preventDefault();
+        return false;
+    }
+});
+</script>
+{% endblock %}
+
+{% block body %}
+    <header class="container row debut ">
+        <h1 class="title centre debut" >Login</h1>
+    </header>
+    <div class="spacer large " ></div>
+    <main class="container col debut gap5">
+        <p class="error" >Error in login or password</p>
+        <form class="container row debut gap5"
+                enctype="multipart/form-data" 
+                method="post" 
+                 id="form_login"
+                 name="form_login">
+                <div class="container col gap5" >
+                    <label for="login">Login*</label>
+                    <label for="password">Password*</label>
+                </div>
+                <div class="container col gap5" >
+                    <input type="text"
+                        autocomplete="username"
+                        placeholder="Enter Username" 
+                        name="login" id="login" 
+                        required   >
+                    <input type="password" 
+                        autocomplete="current-password" 
+                        placeholder="Enter Password"
+                        id="password" name="password"
+                        required   >
+                    <button class=" milieu-cont button"  type="submit"
+                        >Login</button>
+                </div>
         </form>
-    </p>
-</body></body>
+    </main>
+{% endblock %}

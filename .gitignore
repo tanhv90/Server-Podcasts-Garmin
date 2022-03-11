@@ -6,3 +6,8 @@ error.log
 cover.png
 temp
 temp_conversion.mp3
+./.*
+.idea
+/env
+/venv
+/.vs
