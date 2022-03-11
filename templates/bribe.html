@@ -1,0 +1,20 @@
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://kit.fontawesome.com/a788760829.js" crossorigin="anonymous"></script>
+    <link as="image"       href="/static/notyet.png" />
+    <link rel="stylesheet" href="/static/style.css"/>
+{% block code %}{% endblock %}    
+</head>
+
+<body class="container col debut"  >
+    <div class="spacer"></div>
+{% block body %}
+    <p class="warning" >
+        <span class="fa-2x" ><i class="fas fa-spinner fa-spin"></span>
+     </p>
+     <p class="warning"> ... Merci de patienter... Chargement...</p>'
+{% endblock %}
+</body>
+
+</html>

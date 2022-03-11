@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<opml version="1.0">
+  <head> 
+    <title>Export OPML (MyPodcasts)</title>
+  </head>
+  <body>
+  {% for pod in podcasts %}
+  <outline type="rss" text="{{pod.title}}" title="{{pod.title}}" xmlUrl="{{pod.rss_url}}" htmlUrl="{{pod.html_url}}" />
+  {% endfor %}
+  </body>
+</opml>

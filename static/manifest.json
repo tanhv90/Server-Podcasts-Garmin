@@ -1,0 +1,8 @@
+{
+  "name": "MyPodcasts",
+  "theme_color": "#217af3",
+  "background_color": "rgba(244,228,228,0.98)",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "valtreb.herokuapps.com"
+}

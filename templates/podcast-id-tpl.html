@@ -1,0 +1,165 @@
+
+{% extends 'index.html' %}
+
+{% block title %} - Episods{% endblock %}
+
+{% block code %}
+<script type="text/javascript">
+    var nbEpisods  = {{ podcast.counts.total}};
+    var nbUnread   = {{ podcast.counts.unreadeds}};
+    var nbUnsynced = {{ podcast.counts.unsynceds}};
+    var nbRead     = {{ podcast.counts.readeds}};
+    var nbSynced   = {{ podcast.counts.synceds}};
+
+    $(document).ready(  () =>   {
+
+        $('.desc').click( (ev) => {
+            var targ$ = $(ev.currentTarget);
+            if (targ$.hasClass('short')) {
+                targ$.removeClass('short');
+            } else {
+                targ$.addClass('short');
+            }
+            ev.preventDefault();
+        });
+
+        insertTime();
+    });
+</script>
+{% endblock %}
+
+{% block body %}
+    <header class="container col full debut-cont gap10">
+        <div class="container row one debut-cont">
+            <a class="container clickable col  vignette rigid " href="/">
+                <div class="pastille debut rigid"  alt="Retour Liste" ><i class="fas fa-arrow-circle-left"></i></div>
+            </a>
+            {% if podcast.image != None %}
+            <img class="vignette rigid " src="{{podcast.image}}" />
+            {% else %}
+            <img class="vignette rigid " src="/static/notyet.png" />
+            {% endif %}
+            <div class="spacer "></div>
+            <div class="container explode col debut  gap5">
+                <h1 class="title milieu">{{ podcast.title }}</h1>
+                {% if podcast.description != None %}
+                <div class=" desc short explode container clickable" >{{ podcast.description }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div  class="container row full reparti" >
+            <div class="container col debut">
+                <div class="clickable  button" 
+                        alt="Marquer TOUS comme lus"
+                        onclick="allRead( {{ podcast.id }} )">
+                     TOUS lus
+                </div>
+            </div>
+
+            <div class="container col debut">
+                <div class=" button  clickable " 
+                        alt="Marquer TOUS comme NON lus"
+                        onclick="noneRead({{ podcast.id }} )" >
+                     AUCUN lu
+                </div>
+            </div>
+            <div class="spacer"  > </div>
+            <div class="spacer"  > </div>
+            
+            <div class="container col fin">
+                <div class="clickable  button" 
+                        alt="Ne RIEN synchroniser"
+                        onclick="noneSync( {{ podcast.id }} )"   >
+                    AUCUNE synchro
+                </div>
+            </div>
+
+            <div class="container col fin">
+                <div class=" clickable  button " 
+                        alt="TOUT synchroniser"
+                        onclick="allSync( {{ podcast.id }} )"   > 
+                    TOUT synchro
+                </div>
+            </div>
+        </div>
+        {% block count %}
+        <div  class="container row reparti gap10 full" >
+            <div class="spacer"  > </div>
+            <div class="debut recap" ><span id="readed">{{ podcast.counts.readeds}}</span>  / <span class="total">{{ podcast.counts.total}}</span> déjà lus </div>
+            <div class="spacer"  > </div>
+            <div class="spacer"  > </div>
+            <div class="fin   recap" ><span id="readed">{{ podcast.counts.synceds}}</span>  / <span class="total">{{ podcast.counts.total}}</span> à synchroniser</div>
+            <div class="spacer"  > </div>
+        </div> 
+        {% endblock %}
+
+       
+    </header>
+    
+    <div class="spacer large" ></div>
+
+    <main class="container col milieu gap10">
+        {% for episode in podcast.episodes %}
+        <article class="container col cadre survol elastic gap0" id="{{episode.id}}" >
+            <h2 class="title">({{ episode.position }}) - {{ episode.title }}</h2>
+            <p class="container row" >
+                <span> Durée : </span>
+                <span class="spacer mini" ></span>
+                <span class="dur">{{episode.duration }}</span>
+            {% if episode.pub_date_ms != "0" %}
+                <span class="spacer mini"></span>
+                <span> - </span>
+                <span class="spacer mini"></span>
+                <span > Publié le :  </span>
+                <span class="spacer mini" ></span>
+                <span class="pub">{{ episode.pub_date_ms }}</script></span>
+            {% endif %}
+            </p>
+            <div class="audio">
+                <audio controls preload="none" 
+                        onplay="audioRun('audio_{{ episode.id }}')"
+                        onended="audioDone( '{{ episode.id }}' )" 
+                        onpause="audioPause( '{{ episode.id }}' )" 
+                        id="audio_{{ episode.id }}">
+                    <source src="{{ episode.audio_url }}" type="audio/mp3"/>
+                    Your browser dose not Support the audio Tag
+                </audio>
+            </div>
+            
+            <div class="container row debut" >
+                <div tabindex class="container col ">
+                {% if episode.readed == 1 %}
+                    <p class="clickable toggle checked read"
+                     onclick="toggle( 'r', '{{ episode.id }}' )"
+                     id="r{{ episode.id }}"
+                    ><span><i class="far fa-check-square"></i></span> Lu &nbsp;&nbsp; </p>
+                {% else %}
+                    <p class="clickable toggle unchecked read"
+                       onclick="toggle( 'r', '{{ episode.id }}') "
+                       id="r{{ episode.id }}"
+                       ><span><i class="far fa-square"></i></span> Non lu</p>
+                {% endif %}
+                </div>
+
+                <div class="spacer"></div>
+                
+                <div tabindex class="container col"  >
+                {% if episode.sync_watch == 1 %}
+                    <p class="clickable toggle checked synced"  
+                       onclick="toggle( 's', '{{ episode.id }}' )" 
+                       id="s{{ episode.id }}"
+                       ><span><i class="far fa-check-square"></i></span> A synchroniser &nbsp;&nbsp; </p>
+                {% else %}
+                    <p class="clickable toggle unchecked synced "  
+                       onclick="toggle( 's','{{ episode.id }}' )"  
+                       id="s{{ episode.id }}"
+                    ><span><i class="far fa-square"></i></span > Ne PAS synchroniser </p>
+                {% endif %}
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </main>
+{% endblock %}
+

@@ -1,0 +1,45 @@
+{% extends 'index.html' %}
+
+{% block title %} - RSS{% endblock %}
+
+{% block code %}        
+<script type="text/javascript">
+    $('document').ready(  () => {
+        document.getElementById("rss").addEventListener("keypressed", chg);
+        document.getElementById("rss").addEventListener("onpaste", chg);
+        $('#clicked').hide();
+    });
+</script>
+{% endblock %}
+
+{% block body %}
+    <header class="container row debut ">
+        <a class="container col rigid vignette article " href="/" >
+            <div class="pastille centre debut rigid"   alt="Retour Liste" ><i class="fas fa-arrow-circle-left"></i></div>
+        </a>
+        <h1 class="title centre debut"  >Abonnement à UN podcast (fichier RSS)</h1>
+    </header>
+    <div class="spacer large" ></div>
+    <main class="container col full debut gap10">
+        <div class="container row debut gap5"  name="form_login"
+             id="form_login" >
+            <label for="rss">URL du fichier RSS*</label>
+
+            <div  class="container col gap10 elastic"  >
+                <input id="rss" name="rss" placeholder="RSS file URL"  
+                    required autofocus autocomplete="on"     />
+                <button 
+                    class="milieu-cont centre-cont button clickable" 
+                    tabindex 
+                    onclick="podAdd()"
+                  >
+                    Je m'abonne
+                </button>
+                <p id="clicked"  ><span><i class="fas fa-cog fa-spin"></i></span>
+                   Merci de laisser cettte page ouverte jusqu'à la fin du traitement
+                </p>
+            </div>
+        </div>
+
+    </main>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'index.html' %}
+
+{% block title %} - Abonnements{% endblock %}
+
+{% block body %}
+<div id="user" class="full container row fin fin-cont end-cont" >
+    
+{% if user == "" %}
+    <div >
+        <a href="/login"><i class="far fa-user"></i> Connectez-vous </a>
+    </div>
+{% else %}
+    <div class=" rigid" ><i class="fas fa-user"></i> {{user}} </div>
+    <div class="spacer" ></div>
+    <a  alt="Se  déconnecter" href="/logout"><i class="fas fa-sign-out-alt"></i></a>
+{% endif %}
+</div>
+{% if podcasts != [] %}
+    {% if podcasts[0].user_synceds > 0 %}
+    <div class="fin info">{{ podcasts[0].user_synceds }} épisodes seront synchronisés sur la montre</div>
+    {% endif %}
+{% endif %}
+
+<header class="container row one debut millieu-cont ">
+    <img class="pastille rigid milieu" src="/static/pods3.png" />
+    <div class="spacer" ></div>
+    <h1 class="title centre " >Liste des podcasts</h1>
+    <div class="spacer" ></div>
+    <article  class="container clickable col vignette debut article" onclick="refresh()"   >
+        <div class="pastille milieu debut rigid"  alt="Mise à jour des épisodes"  ><i class="fas fa-sync"></i></div>
+    </article>
+    <a class="container col vignette article " 
+        href="/podcast/add" 
+        ><div class="pastille milieu debut rigid " 
+        alt="Abonnement à UN podcast par RSS"
+        ><i class="fas fa-plus-circle"></i></div></a>
+    <a class="container col vignette article  "
+        href="/podcasts/opml"
+        ><div class="pastille milieu debut rigid"
+                alt="Abonnement multiple via OPML"
+            ><i class="fas fa-folder-plus"></i></div></a>
+    <div class="container col vignette article clickable "  
+        ><div  class="pastille milieu debut rigid"
+            alt="Export OPML de vos abonnements"
+        ><i id="export" class=" clickable fas fa-solid fa-download"></i></div></div>
+</header>
+<div class="spacer large" ></div>
+<main class="container row many debut fin">
+
+    {% for podcast in podcasts %}
+    <article class="container col vignette rigid gap10" tabindex id="{{ podcast.id }}"  >
+        <div class="del" 
+            onclick="podcastRemove( '{{ podcast.id }}' )"
+        ><i class="fas fa-times-circle"></i></div>
+        <a class="vignette rigid " href="/podcast/{{ podcast.id }}"  >
+            {% if podcast.image_url != None %}
+            <img  alt="{{ podcast.title }}" src="{{ podcast.image_url }}" />
+            {% else %}
+            <img alt="{{ podcast.title }}" class = "vignette rigid" >{{  podcast.title }}</div>                  
+            {% endif %}
+            
+            {% if podcast.counts.synceds > 49  %}
+            <div  class="tosync" alt="{{podcast.counts.synceds}} épisodes à synchroniser">
+                <p class="" >49+</p>
+            </div>
+            {% else %}
+                {% if podcast.counts.synceds > 0 %}
+            <div  class="tosync" alt="{{podcast.counts.synceds}} épisodes à synchroniser" >
+                <p class="" >{{podcast.counts.synceds}}</p>
+            </div>
+                {% endif %}
+            {% endif %}
+    </a>
+    </article>
+    {% endfor %}    
+
+</main>
+{% endblock %}
+
+{% block code %}
+<script type="text/javascript">
+    $(document).ready(  () =>   {
+
+        $('#export').click( (ev) => {
+            var targ$ = $(ev.currentTarget);
+            getOPML();
+            return false;
+        });
+    });
+</script>
+{% endblock %}

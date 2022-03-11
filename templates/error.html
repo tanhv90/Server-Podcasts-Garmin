@@ -1,0 +1,8 @@
+{% extends 'index.html' %}
+
+{% block title %} - Error{% endblock %}
+
+{% block body %}{% endblock %}
+{% block error %}
+<p class ="warning">Application error ! <br>code {{ code }}<br>{{ data }}</p>'
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+
+{% block title %} - OPML{% endblock %}
+
+{% block code %}
+<script type="text/javascript">
+    $(document).ready( async () =>  {
+       document.getElementById("opml").addEventListener("change", updPods, false);
+       initOpml();
+       $('#clicked').hide();
+       $("#infos").hide();       
+     } );
+</script>
+{% endblock %}
+
+{% block body %}
+    <header class="container row debut ">
+        <a class="container col rigid vignette article " href="/" >
+            <div class="pastille centre debut rigid"   alt="Retour Liste" ><i class="fas fa-arrow-circle-left"></i></div>
+        </a>
+        <h1 class="title centre debut" >Abonnement multiple par fichier OPML</h1>
+    </header>
+    <div class="spacer large" ></div>
+     <main class="main container col debut ">
+        <div class="container row debut gap5">
+            <div class="container col gap10" id="form" name="form_login"
+                  >
+                    <input id="opml" type="file" name="opml" placeholder="nom fichier OPML" 
+                       accept="text/xml"
+                       required autofocus autocomplete="on"    />
+                <button 
+                     class="  milieu-cont centre-cont button clickable" tabindex
+                     onclick="podsAdd()"
+                      >
+                     Je m'abonne
+                </button>
+                <p id="clicked"><span><i class="fas fa-cog fa-spin"></i></span>
+                    Merci de laisser cettte page ouverte jusqu'à la fin du traitement
+                </p>
+             </div>
+            </div>
+        </main>
+    <div id="infos" class="container col gap5 full">
+            <div class="milieu" id="ok" > </div>
+            <progress id="podLoad" min="0" class="milieu progress" ></progress>
+            <div id="details" class="cadre appuye col debut-cont full"
+            ></div>
+        </div>
+    </main>
+{% endblock %}
