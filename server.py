@@ -30,7 +30,7 @@ configuration_flask = {
 
 lock = threading.Lock()
 app = Flask(__name__)
-app.secret_key = os.environ('KEY')
+app.secret_key = "1234567890"
 app.config.from_mapping(configuration_flask)
 cache = Cache(app)
 
